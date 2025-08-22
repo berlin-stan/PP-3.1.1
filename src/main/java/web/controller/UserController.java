@@ -36,17 +36,15 @@ public class UserController {
                            @RequestParam("name") String name,
                            @RequestParam("email") String email,
                            @RequestParam("age") int age) {
-        User user;
-        if (id != null) {
-            user = userService.getUserById(id);
-            user.setName(name);
-            user.setEmail(email);
-            user.setAge(age);
-        } else {
-            user = new User(name, email, age);
-        }
-        userService.saveUser(user);
+        userService.saveOrUpdateUser(id, name, email, age); // ← Логика вынесена в сервис
         return "redirect:/users";
+    }
+
+    @GetMapping("/editUser")
+    public String showEditForm(@RequestParam("id") Long id, Model model) {
+        User user = userService.getUserById(id);
+        model.addAttribute("user", user);
+        return "user-form";
     }
 
     @GetMapping("/deleteUser")
